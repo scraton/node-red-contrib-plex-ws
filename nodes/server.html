@@ -1,0 +1,53 @@
+<script type="text/javascript">
+    RED.nodes.registerType('plex-ws-server', {
+        category: 'config',
+        defaults: {
+            hostname: { required: true },
+            port: { value: 32400, required: true, validate: RED.validators.number() },
+            token: { required: true },
+            secure: { required: false }
+        },
+        credentials: {
+            token: { type: 'text' }
+        },
+        label: function() {
+            return this.name || `${this.hostname}:${this.port}`;
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="plex-ws-server">
+    <div class="form-row">
+        <label for="node-config-input-hostname"><i class="fa fa-globe"></i> Hostname</label>
+        <input class="input-append-left" type="text" id="node-config-input-hostname" style="width:40%;" placeholder="(e.g. plex.local)">
+
+        <label for="node-config-input-port" style="margin-left:10px; width:38px; ">Port</label>
+        <input type="number" id="node-config-input-port" style="width:72px" placeholder="32400">
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-config-input-secure" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-config-input-secure" style="width: auto">Enable secure (SSL/TLS) connection</label>
+   </div>
+    <div class="form-row">
+        <label for="node-config-input-token"><i class="fa fa-key"></i> Token</label>
+        <input type="text" id="node-config-input-token" placeholder="(e.g. abc123fg)">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="plex-ws-server">
+    <h2>Plex server configuration</h2>
+
+    <p>Setup the connection to your Plex server using this node.</p>
+
+    <h3>Config</h3>
+    <dl class="message-properties">
+        <dt>Hostname <span class="property-type">string</span></dt>
+        <dd>Hostname used to connect to Plex</dd>
+
+        <dt>Port <span class="property-type">integer</span></dt>
+        <dd>Port used to connect to Plex</dd>
+
+        <dt>Token <span class="property-type">string</span></dt>
+        <dd>Your <code>X-Plex-Token</code>. See <a href="https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/" target="_blank" rel="noopener noreferrer">here</a> for instructions.</dd>
+    </dl>
+</script>

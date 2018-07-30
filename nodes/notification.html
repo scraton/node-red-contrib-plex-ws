@@ -1,0 +1,53 @@
+<script type="text/javascript">
+    RED.nodes.registerType("plex-ws-notification", {
+        category: "plex",
+        paletteLabel: "notification",
+        color: "#93989f",
+        icon: "plex.png",
+        defaults: {
+            name: { value: "" },
+            server: { value: "", type: "plex-ws-server", required: true },
+        },
+        inputs: 0,
+        outputs: 1,
+        label: function() {
+            return this.name || "notification";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="plex-ws-notification">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bot">Server</label>
+        <input type="text" id="node-input-server" placeholder="Server">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="plex-ws-notification">
+    <p>Receive all notifications from Plex.</p>
+
+    <h3>Details</h3>
+    <p>
+        When Plex issues a notification through their websocket API, a message will be issued. This includes
+        any and all notifications such as playing, scanning, progress, and other activities. Presumably,
+        if you can see it happen in the Plex Web UI, you will receive a notification about it here.
+    </p>
+
+    <dl class="message-properties">
+        <dt>Name <span class="property-type">string</span></dt>
+        <dd>Label for this node for easy reference</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <p>
+        The original notification payload will be sent as <code>msg.payload</code>. Notification types
+        and payloads are not documented and are subject to change.
+    </p>
+</script>
