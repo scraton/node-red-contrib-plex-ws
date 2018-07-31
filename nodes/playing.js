@@ -13,6 +13,7 @@ module.exports = function(RED) {
         return;
       }
 
+      this.lastState = null;
       this.begin();
     }
 
@@ -22,8 +23,12 @@ module.exports = function(RED) {
 
     begin() {
       this.plex.on('playing', (state, notification) => {
-        const msg = { payload: state, plex: notification };
-        this.send(msg);
+        if (state !== this.lastState) {
+            const msg = { payload: state, plex: notification };
+
+            this.lastState = state;
+            this.send(msg);
+        }
       });
     }
   }
