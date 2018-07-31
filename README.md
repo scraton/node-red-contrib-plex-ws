@@ -28,11 +28,11 @@ You can view detailed documentation for the nodes via the node-red info pane. Ju
 
 ### playing
 
-Receive notification when the playing state of a session changes
+Receive notification when the playing state of a session changes. Add filters for specific conditions (e.g. media type, player, user, etc).
 
 ### notification
 
-Receive all Plex notifications
+Receive all Plex notifications.
 
 ---
 ## Development
