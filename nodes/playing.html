@@ -47,8 +47,14 @@
         notification message will be sent as <code>msg.plex</code>.
     </p>
 
-    <p>
-        Possible values for the state are <pre>playing</pre>, <pre>paused</pre>,
-        or <pre>stopped</pre>.
-    </p>
+    <dl class="message-properties">
+        <dt><code>msg.payload</code></dt>
+        <dd>Current state of a session. Possible values are <code>playing</code>, <code>paused</code>, or <code>stopped</code>.</dd>
+
+        <dt><code>msg.session</code></dt>
+        <dd>Session the state is referring to. Includes information such as <code>Media</code>, <code>Player</code>, <code>User</code>, etc.</dd>
+
+        <dt><code>msg.plex</code></dt>
+        <dd>Original notification from Plex.</dd>
+    </dl>
 </script>

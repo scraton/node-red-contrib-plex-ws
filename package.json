@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/scraton/node-red-contrib-plex-ws#readme",
   "dependencies": {
+    "plex-api": "^5.2.0",
     "ws": "^6.0.0"
   }
 }

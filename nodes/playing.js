@@ -13,7 +13,6 @@ module.exports = function(RED) {
         return;
       }
 
-      this.lastState = null;
       this.begin();
     }
 
@@ -23,12 +22,27 @@ module.exports = function(RED) {
 
     begin() {
       this.plex.on('playing', (state, notification) => {
-        if (state !== this.lastState) {
-            const msg = { payload: state, plex: notification };
+        const sessions = this.server.sessions;
+        const sessionKey = notification['sessionKey'];
 
-            this.lastState = state;
-            this.send(msg);
-        }
+        sessions.fetch(sessionKey).then((session) => {
+            const msg = {
+                payload: state,
+                plex: notification,
+                session: session
+            };
+
+            if (session['prevState'] !== state) {
+                this.send(msg);
+                session['prevState'] = state;
+            }
+
+            if (state === 'stopped') {
+                sessions.delete(sessionKey);
+            }
+        }).catch((reason) => {
+            this.warn(`failed to fetch session details from Plex: ${reason}`);
+        });
       });
     }
   }

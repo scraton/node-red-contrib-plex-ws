@@ -4,6 +4,7 @@
         defaults: {
             hostname: { required: true },
             port: { value: 32400, required: true, validate: RED.validators.number() },
+            timeout: { value: 1000, required: true, validate: RED.validators.number() },
             token: { required: true },
             secure: { required: false }
         },
@@ -28,10 +29,14 @@
         <input type="checkbox" id="node-config-input-secure" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-config-input-secure" style="width: auto">Enable secure (SSL/TLS) connection</label>
    </div>
-    <div class="form-row">
-        <label for="node-config-input-token"><i class="fa fa-key"></i> Token</label>
-        <input type="text" id="node-config-input-token" placeholder="(e.g. abc123fg)">
-    </div>
+   <div class="form-row">
+       <label for="node-config-input-token"><i class="fa fa-key"></i> Token</label>
+       <input type="text" id="node-config-input-token" placeholder="(e.g. abc123fg)">
+   </div>
+   <div class="form-row">
+       <label for="node-config-input-timeout">API Timeout</label>
+       <input type="number" id="node-config-input-timeout" placeholder="1000">
+   </div>
 </script>
 
 <script type="text/x-red" data-help-name="plex-ws-server">
@@ -49,5 +54,10 @@
 
         <dt>Token <span class="property-type">string</span></dt>
         <dd>Your <code>X-Plex-Token</code>. See <a href="https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/" target="_blank" rel="noopener noreferrer">here</a> for instructions.</dd>
+
+        <dt>API Timeout <span class="property-type">integer</span></dt>
+        <dd>Timeout when requesting from the API in milliseconds.</dd>
     </dl>
+
+    <p>The timeout is only used in certain cases where additional information must be requested from the API.</p>
 </script>
