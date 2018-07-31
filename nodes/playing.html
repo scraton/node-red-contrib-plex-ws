@@ -1,4 +1,35 @@
 <script type="text/javascript">
+(function(){
+    var FILTERABLE_KEYS = [
+        'addedAt',
+        'contentRating',
+        'duration',
+        'librarySectionKey',
+        'librarySectionTitle',
+        'rating',
+        'title',
+        'type',
+        'viewCount',
+        'viewOffset',
+        'User.id',
+        'User.title',
+        'Player.address',
+        'Player.device',
+        'Player.machineIdentifier',
+        'Player.title',
+        'Player.local',
+        'Session.location'
+    ];
+
+    var OPERATORS = [
+        { v: "eq", t: "==" },
+        { v: "neq", t: "!=" },
+        { v: "lt", t: "<" },
+        { v: "lte", t: "<=" },
+        { v: "gt", t: ">" },
+        { v: "gte", t: ">=" }
+    ];
+
     RED.nodes.registerType("plex-ws-playing", {
         category: "plex",
         paletteLabel: "playing",
@@ -6,7 +37,8 @@
         icon: "plex.png",
         defaults: {
             name: { value: "" },
-            server: { value: "", type: "plex-ws-server", required: true }
+            server: { value: "", type: "plex-ws-server", required: true },
+            filters: { value: [], required: false }
         },
         inputs: 0,
         outputs: 1,
@@ -15,8 +47,92 @@
         },
         labelStyle: function() {
             return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            $("#node-input-filters-container").css("min-height","250px").css("min-width","450px").editableList({
+                sortable: true,
+                removable: true,
+                addItem: function(container, i, opt) {
+                    container.css({
+                        overflow: "hidden",
+                        whiteSpace: "nowrap"
+                    });
+
+                    if (!opt.hasOwnProperty("idx")) {
+                        opt._idx = Math.floor((0x99999-0x10000)*Math.random()).toString();
+                    }
+
+                    var row = $("<div/>").appendTo(container);
+                    var keyField = $("<select/>", {
+                            class: "node-input-filter-key",
+                            style: "width:120px; margin-left: 5px; text-align: center;"
+                        })
+                        .appendTo(row);
+
+                    for (var idx in FILTERABLE_KEYS) {
+                        var key = FILTERABLE_KEYS[idx];
+                        keyField.append($("<option></option>").val(key).text(key));
+                    }
+
+                    var operatorField = $("<select/>", {
+                            class: "node-input-filter-operator",
+                            style: "width:60px; margin-left: 5px; text-align: center;"
+                        })
+                        .appendTo(row);
+
+                    for (var idx in OPERATORS) {
+                        var operator = OPERATORS[idx];
+                        operatorField.append($("<option></option>").val(operator.v).text(operator.t));
+                    }
+
+                    var valueField = $("<input/>", {
+                            class: "node-input-filter-value",
+                            type: "text",
+                            style: "width: 200px; margin-left: 5px;"
+                        })
+                        .appendTo(row)
+                        .typedInput({
+                            default: "str",
+                            types: ["str", "num", "bool"]
+                        });
+
+                    var filter = opt.filter;
+                    if (typeof filter !== "undefined") {
+                        keyField.val(filter.key);
+                        operatorField.val(filter.operator);
+                        valueField.typedInput("value", filter.value, filter.valueType);
+                    }
+                }
+            });
+
+            for (var idx in this.filters) {
+                var filter = this.filters[idx];
+                $("#node-input-filters-container").editableList("addItem", { idx: idx, filter: filter });
+            }
+        },
+        oneditsave: function() {
+            var filters = $("#node-input-filters-container").editableList("items");
+            var node = this;
+
+            node.filters = [];
+
+            filters.each(function(idx) {
+                var filterData = $(this).data("data");
+                var filter = $(this);
+
+                var key = filter.find(".node-input-filter-key").val();
+                var operator = filter.find(".node-input-filter-operator").val();
+                var value = filter.find(".node-input-filter-value").typedInput("value");
+                var type = filter.find(".node-input-filter-value").typedInput("type");
+                var f = { idx: idx, key: key, operator: operator, value: value, valueType: type };
+
+                node.filters.push(f);
+            });
         }
     });
+})();
 </script>
 
 <script type="text/x-red" data-template-name="plex-ws-playing">
@@ -27,6 +143,10 @@
     <div class="form-row">
         <label for="node-input-bot">Server</label>
         <input type="text" id="node-input-server" placeholder="Server">
+    </div>
+    <div class="form-row node-input-filters-container-row">
+        <label for="node-input-filters">Filters</label>
+        <ol id="node-input-filters-container"></ol>
     </div>
 </script>
 
@@ -39,12 +159,15 @@
     <dl class="message-properties">
         <dt>Name <span class="property-type">string</span></dt>
         <dd>Label for this node for easy reference</dd>
+
+        <dt class="optional">Filters</dt>
+        <dd>Filters to apply to the notifications. Only messages matching the filters will be output. Not all attributes are covered. For more advanced filters use other nodes.</dd>
     </dl>
 
     <h3>Outputs</h3>
     <p>
-        The current playing state will be sent as <code>msg.payload</code>. The original
-        notification message will be sent as <code>msg.plex</code>.
+        A message will be output each time the playing state is changed for a session
+        matching the given filters.
     </p>
 
     <dl class="message-properties">
