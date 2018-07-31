@@ -5,6 +5,8 @@ module.exports = function(RED) {
     constructor(config) {
       RED.nodes.createNode(this, config);
 
+      this.allowUpdates = !!config.allowUpdates;
+
       this.filters = config.filters || [];
       this.filters.sort((a, b) => a.idx > b.idx ? 1 : a.idx < b.idx ? -1 : 0);
 
@@ -62,8 +64,6 @@ module.exports = function(RED) {
                 case 'gte': comparison = filterValue >= sessionValue; break;
             }
 
-            console.log(`evaluate ${filterValue} ${filter.operator} ${sessionValue}`);
-
             match = match && comparison;
         });
 
@@ -82,7 +82,7 @@ module.exports = function(RED) {
                 session: session
             };
 
-            if (session && session['prevState'] !== state) {
+            if (session && (this.allowUpdates || session['prevState'] !== state)) {
                 if (this.matchesFilters(session)) {
                     this.send(msg);
                 }

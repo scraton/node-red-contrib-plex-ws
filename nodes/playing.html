@@ -38,6 +38,7 @@
         defaults: {
             name: { value: "" },
             server: { value: "", type: "plex-ws-server", required: true },
+            allowUpdates: { value: false, required: false },
             filters: { value: [], required: false }
         },
         inputs: 0,
@@ -141,8 +142,12 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-bot">Server</label>
+        <label for="node-input-server">Server</label>
         <input type="text" id="node-input-server" placeholder="Server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-allowUpdates">Allow Updates</label>
+        <input type="checkbox" id="node-input-allowUpdates" style="display: inline-block; width: auto; vertical-align: top;">
     </div>
     <div class="form-row node-input-filters-container-row">
         <label for="node-input-filters">Filters</label>
@@ -160,6 +165,9 @@
         <dt>Name <span class="property-type">string</span></dt>
         <dd>Label for this node for easy reference</dd>
 
+        <dt>Allow Updates <span class="property-type">boolean</span></dt>
+        <dd>Allow duplicate state events to receive updates for other fields (e.g. media offset).</dd>
+
         <dt class="optional">Filters</dt>
         <dd>Filters to apply to the notifications. Only messages matching the filters will be output. Not all attributes are covered. For more advanced filters use other nodes.</dd>
     </dl>
@@ -168,6 +176,12 @@
     <p>
         A message will be output each time the playing state is changed for a session
         matching the given filters.
+    </p>
+
+    <p>
+        If allow updates is enabled, multiple messages will be sent with the same state
+        but with updates to fields in <code>msg.plex</code>
+        (e.g. <code>msg.plex.viewOffset</code> for media player offset).
     </p>
 
     <dl class="message-properties">
