@@ -1,7 +1,7 @@
 <script type="text/javascript">
-    RED.nodes.registerType("plex-ws-notification", {
+    RED.nodes.registerType("plex-ws-playing", {
         category: "plex",
-        paletteLabel: "notification",
+        paletteLabel: "playing",
         color: "#93989f",
         icon: "plex.png",
         defaults: {
@@ -11,7 +11,7 @@
         inputs: 0,
         outputs: 1,
         label: function() {
-            return this.name || "notification";
+            return this.name || "playing";
         },
         labelStyle: function() {
             return this.name ? "node_label_italic" : "";
@@ -19,7 +19,7 @@
     });
 </script>
 
-<script type="text/x-red" data-template-name="plex-ws-notification">
+<script type="text/x-red" data-template-name="plex-ws-playing">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -30,15 +30,11 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="plex-ws-notification">
-    <p>Receive all notifications from Plex.</p>
+<script type="text/x-red" data-help-name="plex-ws-playing">
+    <p>Receive messages when a playing notification is received.</p>
 
     <h3>Details</h3>
-    <p>
-        When Plex issues a notification through their websocket API, a message will be issued. This includes
-        any and all notifications such as playing, scanning, progress, and other activities. Presumably,
-        if you can see it happen in the Plex Web UI, you will receive a notification about it here.
-    </p>
+    <p>When Plex issues a notification about the playing state, a message will be issued.</p>
 
     <dl class="message-properties">
         <dt>Name <span class="property-type">string</span></dt>
@@ -47,7 +43,12 @@
 
     <h3>Outputs</h3>
     <p>
-        The original notification payload will be sent as <code>msg.payload</code>. Notification types
-        and payloads are not documented and are subject to change.
+        The current playing state will be sent as <code>msg.payload</code>. The original
+        notification message will be sent as <code>msg.plex</code>.
+    </p>
+
+    <p>
+        Possible values for the state are <pre>playing</pre>, <pre>paused</pre>,
+        or <pre>stopped</pre>.
     </p>
 </script>

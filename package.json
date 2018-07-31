@@ -5,7 +5,8 @@
   "node-red": {
     "nodes": {
       "server": "nodes/server.js",
-      "notification": "nodes/notification.js"
+      "notification": "nodes/notification.js",
+      "playing": "nodes/playing.js"
     }
   },
   "repository": "git+https://github.com/scraton/node-red-contrib-plex-ws.git",

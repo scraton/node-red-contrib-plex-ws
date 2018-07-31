@@ -23,7 +23,12 @@ You will need to get your `X-Plex-Token` in order to configure the nodes. See ["
 
 You can view detailed documentation for the nodes via the node-red info pane. Just select a node and start readin'.
 
+* [playing](#playing)
 * [notification](#notification)
+
+### playing
+
+Receive notification when the playing state of a session changes
 
 ### notification
 
