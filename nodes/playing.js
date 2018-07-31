@@ -93,8 +93,8 @@ module.exports = function(RED) {
             if (state === 'stopped') {
                 sessions.delete(sessionKey);
             }
-        }).catch((reason) => {
-            this.warn(`failed to fetch session details from Plex: ${reason}`);
+        }).catch((err) => {
+            this.warn(`failed to fetch session details from Plex: ${err}`);
         });
       });
     }

@@ -49,19 +49,26 @@ module.exports = function(RED) {
 
       this.sessions = new SessionStore(this.api);
 
-      this.socket.on('close', reason => this.onClose(reason));
-      this.socket.on('unauthorized', () => this.onUnauthorized());
+      this.socket.on('close', (code, reason) => this.onPlexClose(code, reason));
+      this.socket.on('unauthorized', () => this.onPlexUnauthorized());
+
+      this.on('close', () => this.onClose());
     }
 
     get plex() {
       return this.socket;
     }
 
-    onClose(reason) {
-      this.warn(`plex disconnected: ${reason}`);
+    onClose() {
+      this.socket.close();
+      this.socket = null;
     }
 
-    onUnauthorized() {
+    onPlexClose(code, reason) {
+      this.warn(`plex disconnected: ${code} - ${reason}`);
+    }
+
+    onPlexUnauthorized() {
       this.warn(`plex authentication failed`);
     }
   }
