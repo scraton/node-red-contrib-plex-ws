@@ -71,7 +71,9 @@ module.exports = function(RED) {
     }
 
     onPlexClose(code, reason) {
-      this.warn(`plex disconnected: ${code} - ${reason}`);
+      if (reason) { // don't bother the user unless there's a reason
+        this.warn(`plex disconnected: ${code} - ${reason}`);
+      }
     }
 
     onPlexUnauthorized() {
