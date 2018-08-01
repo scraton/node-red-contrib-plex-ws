@@ -52,6 +52,7 @@ module.exports = function(RED) {
       this.socket.on('close', (code, reason) => this.onPlexClose(code, reason));
       this.socket.on('unauthorized', () => this.onPlexUnauthorized());
       this.socket.on('error', (err) => this.onPlexError(err));
+      this.socket.on('pong-timeout', () => this.onPlexPongTimeout());
 
       this.on('close', () => this.onClose());
     }
@@ -63,6 +64,10 @@ module.exports = function(RED) {
     onClose() {
       this.socket.close();
       this.socket = null;
+    }
+
+    onPlexPongTimeout() {
+      this.warn('plex connection timeout, reconnecting');
     }
 
     onPlexClose(code, reason) {
