@@ -51,6 +51,7 @@ module.exports = function(RED) {
 
       this.socket.on('close', (code, reason) => this.onPlexClose(code, reason));
       this.socket.on('unauthorized', () => this.onPlexUnauthorized());
+      this.socket.on('error', (err) => this.onPlexError(err));
 
       this.on('close', () => this.onClose());
     }
@@ -70,6 +71,10 @@ module.exports = function(RED) {
 
     onPlexUnauthorized() {
       this.warn(`plex authentication failed`);
+    }
+
+    onPlexError(err) {
+      this.warn(`plex error: ${err}`);
     }
   }
 
