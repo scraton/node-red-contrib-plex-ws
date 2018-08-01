@@ -30,9 +30,14 @@ You can view detailed documentation for the nodes via the node-red info pane. Ju
 
 Receive notification when the playing state of a session changes. Add filters for specific conditions (e.g. media type, player, user, etc).
 
+![](images/PlayingFlow.png?raw=true "Playing Flow")
+![](images/PlayingProperties.png?raw=true "Playing Node Properties")
+
 ### notification
 
 Receive all Plex notifications.
+
+![](images/NotificationFlow.png?raw=true "Notification Flow")
 
 ---
 ## Development
