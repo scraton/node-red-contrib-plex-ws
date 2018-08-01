@@ -75,27 +75,29 @@ module.exports = function(RED) {
         const sessions = this.server.sessions;
         const sessionKey = notification['sessionKey'];
 
-        sessions.fetch(sessionKey).then((session) => {
-            const msg = {
-                payload: state,
-                plex: notification,
-                session: session
-            };
+        sessions.fetch(sessionKey)
+            .then((session) => {
+                const msg = {
+                    payload: state,
+                    plex: notification,
+                    session: session
+                };
 
-            if (session && (this.allowUpdates || session['prevState'] !== state)) {
-                if (this.matchesFilters(session)) {
-                    this.send(msg);
+                if (session && (this.allowUpdates || session['prevState'] !== state)) {
+                    if (this.matchesFilters(session)) {
+                        this.send(msg);
+                    }
+
+                    session['prevState'] = state;
                 }
 
-                session['prevState'] = state;
-            }
-
-            if (state === 'stopped') {
-                sessions.delete(sessionKey);
-            }
-        }).catch((err) => {
-            this.warn(`failed to fetch session details from Plex: ${err}`);
-        });
+                if (state === 'stopped') {
+                    sessions.delete(sessionKey);
+                }
+            })
+            .catch((err) => {
+                this.warn(`failed to fetch session details from plex: ${err}`);
+            });
       });
     }
   }
