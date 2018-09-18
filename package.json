@@ -22,7 +22,8 @@
     "docker:down": "npm run docker -- down",
     "docker:restart": "npm run docker -- restart",
     "docker:logs": "npm run docker -- logs -f && true",
-    "docker": "docker-compose -f docker-compose.yml"
+    "docker": "docker-compose -f docker-compose.yml",
+    "lint": "eslint --ignore-path .gitignore ."
   },
   "author": "Stephen Craton",
   "license": "MIT",
@@ -33,5 +34,8 @@
   "dependencies": {
     "plex-api": "^5.2.0",
     "ws": "^6.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.6.0"
   }
 }
