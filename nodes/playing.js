@@ -6,6 +6,7 @@ module.exports = function(RED) {
             RED.nodes.createNode(this, config);
 
             this.allowUpdates = !!config.allowUpdates;
+            this.lastKnownState = null;
 
             this.filters = config.filters || [];
             this.filters.sort((a, b) => a.idx > b.idx ? 1 : a.idx < b.idx ? -1 : 0);
@@ -83,12 +84,12 @@ module.exports = function(RED) {
                             session: session
                         };
 
-                        if (session && (this.allowUpdates || session['prevState'] !== state)) {
+                        if (session && (this.allowUpdates || this.lastKnownState !== state)) {
                             if (this.matchesFilters(session)) {
                                 this.send(msg);
                             }
 
-                            session['prevState'] = state;
+                            this.lastKnownState = state;
                         }
 
                         if (state === 'stopped') {
