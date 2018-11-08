@@ -26,46 +26,56 @@ module.exports = function(RED) {
             return !!this.server ? this.server.plex : null;
         }
 
+        castType(value, type) {
+            if (Array.isArray(value)) {
+                return value.map(v => type(v));
+            } else {
+                return type(value);
+            }
+        }
+
         matchesFilters(session) {
             let match = true;
 
             this.filters.forEach((filter) => {
                 let sessionValue = session;
                 let filterValue = filter.value;
-                let comparison;
+                let castType = String;
+                let comparator;
 
                 const keyParts = filter.key.split('.');
                 keyParts.forEach((key) => {
-                    sessionValue = sessionValue[key];
+                    if (Array.isArray(sessionValue)) {
+                        sessionValue = sessionValue.map(v => v[key]);
+                    } else {
+                        sessionValue = sessionValue[key];
+                    }
                 });
-
+                
                 switch (filter.valueType) {
-                case 'str':
-                    sessionValue = String(sessionValue);
-                    filterValue = String(filterValue);
-                    break;
-
-                case 'num':
-                    sessionValue = Number(sessionValue);
-                    filterValue = Number(filterValue);
-                    break;
-
-                case 'bool':
-                    sessionValue = Boolean(sessionValue);
-                    filterValue = Boolean(filterValue);
-                    break;
+                case 'str':  castType = String; break;
+                case 'num':  castType = Number; break;
+                case 'bool': castType = Boolean; break;
+                default:     castType = String; break;
                 }
+
+                sessionValue = this.castType(sessionValue, castType);
+                filterValue = this.castType(filterValue, castType);
 
                 switch (filter.operator) {
-                case 'eq':  comparison = filterValue == sessionValue; break;
-                case 'neq': comparison = filterValue != sessionValue; break;
-                case 'lt':  comparison = filterValue < sessionValue; break;
-                case 'lte': comparison = filterValue <= sessionValue; break;
-                case 'gt':  comparison = filterValue > sessionValue; break;
-                case 'gte': comparison = filterValue >= sessionValue; break;
+                case 'eq':  comparator = v => (filterValue == v); break;
+                case 'neq': comparator = v => (filterValue != v); break;
+                case 'lt':  comparator = v => (filterValue < v); break;
+                case 'lte': comparator = v => (filterValue <= v); break;
+                case 'gt':  comparator = v => (filterValue > v); break;
+                case 'gte': comparator = v => (filterValue >= v); break;
                 }
 
-                match = match && comparison;
+                if (Array.isArray(sessionValue)) {
+                    match = match && sessionValue.some(comparator);
+                } else {
+                    match = match && comparator(sessionValue);
+                }
             });
 
             return match;
