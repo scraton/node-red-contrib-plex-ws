@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   node-red:
-    image: nodered/node-red-docker
+    image: nodered/node-red-docker:0.20.5-slim-v10
     volumes:
       - nodered:/data
       - '.:/data/node_modules/node-red-contrib-plex-ws'
