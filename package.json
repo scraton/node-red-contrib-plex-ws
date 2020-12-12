@@ -32,11 +32,11 @@
   },
   "homepage": "https://github.com/scraton/node-red-contrib-plex-ws#readme",
   "dependencies": {
-    "plex-api": "^5.2.0",
-    "promise-retry": "^1.1.1",
-    "ws": "^6.0.0"
+    "plex-api": "^5.3.1",
+    "promise-retry": "^2.0.1",
+    "ws": "^7.4.1"
   },
   "devDependencies": {
-    "eslint": "^5.6.0"
+    "eslint": "^7.15.0"
   }
 }
